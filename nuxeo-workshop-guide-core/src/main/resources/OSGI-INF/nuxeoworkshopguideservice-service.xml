@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.workshopguide.NuxeoWorkshopGuideService" version="1.0">
+
+  <implementation class="org.nuxeo.workshopguide.NuxeoWorkshopGuideServiceImpl" />
+
+  <service>
+    <provide interface="org.nuxeo.workshopguide.NuxeoWorkshopGuideService" />
+  </service>
+</component>
