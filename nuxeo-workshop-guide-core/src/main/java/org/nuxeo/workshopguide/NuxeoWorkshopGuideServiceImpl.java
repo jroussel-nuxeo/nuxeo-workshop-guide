@@ -1,10 +1,13 @@
 package org.nuxeo.workshopguide;
 
+import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
 
 public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements NuxeoWorkshopGuideService {
+
+    final private static double PRICE_TO_ADD = 42;
 
     /**
      * Component activated notification.
@@ -52,5 +55,20 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
     @Override
     public void unregisterContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
         // Logic to do when unregistering any contribution
+    }
+
+    @Override
+    public double computePrice(DocumentModel documentModel) {
+
+        if (!"NWGProduct".equals(documentModel.getType())) {
+            return new Double(0);
+        }
+
+        final double currentPrice = (double) documentModel.getPropertyValue("nwgproduct:price");
+
+        double newPrice = currentPrice + PRICE_TO_ADD;
+        documentModel.setPropertyValue("nwgproduct:price", newPrice);
+
+        return currentPrice + PRICE_TO_ADD;
     }
 }

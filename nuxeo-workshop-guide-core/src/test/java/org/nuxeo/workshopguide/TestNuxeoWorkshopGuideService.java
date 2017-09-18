@@ -1,24 +1,23 @@
 package org.nuxeo.workshopguide;
 
-import static org.junit.Assert.assertNotNull;
-
+import com.google.inject.Inject;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.*;
-import org.nuxeo.ecm.core.test.CoreFeature;
 import org.nuxeo.runtime.RuntimeService;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 
-import com.google.inject.Inject;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(FeaturesRunner.class)
-@Features({ CoreFeature.class })
-//@Features({ PlatformFeature.class })
-@Deploy("org.nuxeo.workshopguide.nuxeo-workshop-guide-core")
+@Features({ AutomationFeature.class })
+@Deploy({"org.nuxeo.workshopguide.nuxeo-workshop-guide-core", "org.nuxeo.ecm.platform.filemanager.core", "org.nuxeo.ecm.webapp.core", "studio.extensions.jroussel-SANDBOX"})
 public class TestNuxeoWorkshopGuideService {
 
     @Inject
@@ -45,7 +44,7 @@ public class TestNuxeoWorkshopGuideService {
 
     @Test
     public void testDocumentCreation() {
-        DocumentModel docModel = coreSession.createDocumentModel("/", "myFile", "File");
+        DocumentModel docModel = coreSession.createDocumentModel("/", "myProduct", "NWGProduct");
         docModel = coreSession.createDocument(docModel);
 
         coreSession.save();
@@ -61,8 +60,21 @@ public class TestNuxeoWorkshopGuideService {
         Assert.assertNotNull(docByPath);
 
         // Retrieve a document using a query
-        String queryForGettingDocument = "SELECT * FROM File";
+        String queryForGettingDocument = "SELECT * FROM NWGVisual";
         DocumentModelList queryResults = coreSession.query(queryForGettingDocument);
         Assert.assertEquals(1, queryResults.size());
+    }
+
+    @Test
+    public void testComputePrice() {
+        final double expectedPrice = 42;
+
+        DocumentModel docModel = coreSession.createDocumentModel("/", "myProduct", "NWGProduct");
+        docModel.setPropertyValue("nwgproduct:price", 0);
+        docModel = coreSession.createDocument(docModel);
+
+        coreSession.save();
+
+        Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel), 0.001);
     }
 }
