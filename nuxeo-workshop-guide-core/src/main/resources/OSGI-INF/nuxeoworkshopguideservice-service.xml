@@ -6,4 +6,8 @@
   <service>
     <provide interface="org.nuxeo.workshopguide.NuxeoWorkshopGuideService" />
   </service>
+
+  <extension-point name="amount">
+    <object class="org.nuxeo.workshopguide.NuxeoWorkShopGuideServiceDescriptor" />
+  </extension-point>
 </component>

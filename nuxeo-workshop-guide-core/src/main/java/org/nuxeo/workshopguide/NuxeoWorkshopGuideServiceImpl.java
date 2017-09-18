@@ -9,6 +9,16 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
 
     final private static double PRICE_TO_ADD = 42;
 
+    private double overriddenPriceToAdd = 0;
+
+    public double getOverriddenPriceToAdd() {
+        return overriddenPriceToAdd;
+    }
+
+    public void setOverriddenPriceToAdd(double overriddenPriceToAdd) {
+        this.overriddenPriceToAdd = overriddenPriceToAdd;
+    }
+
     /**
      * Component activated notification.
      * Called when the component is activated. All component dependencies are resolved at that moment.
@@ -49,12 +59,18 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
 
     @Override
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
-        // Add some logic here to handle contributions
+        if ("amount".equals(extensionPoint)) {
+            NuxeoWorkShopGuideServiceDescriptor descr = (NuxeoWorkShopGuideServiceDescriptor) contribution;
+
+            double amount = descr.getAmount();
+
+            this.setOverriddenPriceToAdd(amount);
+        }
     }
 
     @Override
     public void unregisterContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
-        // Logic to do when unregistering any contribution
+        this.setOverriddenPriceToAdd(0);
     }
 
     @Override
@@ -66,7 +82,15 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
 
         final double currentPrice = (double) documentModel.getPropertyValue("nwgproduct:price");
 
-        double newPrice = currentPrice + PRICE_TO_ADD;
+        double newPrice;
+        // A contribution specified a custom amount to add
+        if (this.getOverriddenPriceToAdd() != 0) {
+            newPrice = currentPrice + this.getOverriddenPriceToAdd();
+        }
+        else {
+            newPrice = currentPrice + PRICE_TO_ADD;
+        }
+
         documentModel.setPropertyValue("nwgproduct:price", newPrice);
 
         return currentPrice + PRICE_TO_ADD;
