@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.workshopguide.listeners.ProductNotSoldAnymoreListener">
+    <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
+        <documentation>
+            Listen for Core event DOCUMENT_UPDATED and call the
+            ProductNotSoldAnymoreListener.
+        </documentation>
+
+        <listener name="productlistener" async="false" postCommit="false"
+                  class="org.nuxeo.workshopguide.listeners.ProductNotSoldAnymoreListener" priority="120">
+            <event>beforeDocumentModification</event>
+        </listener>
+    </extension>
+</component>

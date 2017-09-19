@@ -1,5 +1,6 @@
 package org.nuxeo.workshopguide;
 
+import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 
 public interface NuxeoWorkshopGuideService {
@@ -11,4 +12,6 @@ public interface NuxeoWorkshopGuideService {
      * @return new price of the NWGProduct
      */
     double computePrice(DocumentModel documentModel);
+
+    boolean moveLinkedVisualsToHiddenFolder(DocumentModel documentModel, CoreSession coreSession);
 }

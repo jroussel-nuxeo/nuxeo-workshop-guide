@@ -1,13 +1,25 @@
 package org.nuxeo.workshopguide;
 
-import org.nuxeo.ecm.core.api.DocumentModel;
+import com.google.inject.Inject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.nuxeo.ecm.automation.core.annotations.Context;
+import org.nuxeo.ecm.collections.core.adapter.Collection;
+import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements NuxeoWorkshopGuideService {
 
+    private static final Log log = LogFactory.getLog(NuxeoWorkshopGuideServiceImpl.class);
+
     final private static double PRICE_TO_ADD = 42;
+
+    final private static String DEFAULT_FOLDER_NAME_WHERE_TO_MOVE_VISUALS = "HiddenFolderForVisuals";
 
     private double overriddenPriceToAdd = 0;
 
@@ -75,6 +87,7 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
 
     @Override
     public double computePrice(DocumentModel documentModel) {
+        log.debug("computePrice(..) method called");
 
         if (!"NWGProduct".equals(documentModel.getType())) {
             return new Double(0);
@@ -85,14 +98,71 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
         double newPrice;
         // A contribution specified a custom amount to add
         if (this.getOverriddenPriceToAdd() != 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("Contribution found with the following value: " + this.getOverriddenPriceToAdd());
+            }
+
             newPrice = currentPrice + this.getOverriddenPriceToAdd();
-        }
-        else {
+        } else {
             newPrice = currentPrice + PRICE_TO_ADD;
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Old price: " + currentPrice + " | New price: " + newPrice);
         }
 
         documentModel.setPropertyValue("nwgproduct:price", newPrice);
 
         return currentPrice + PRICE_TO_ADD;
+    }
+
+    @Override
+    public boolean moveLinkedVisualsToHiddenFolder(DocumentModel documentModel, CoreSession coreSession) {
+        if (log.isDebugEnabled()) {
+            log.debug("moveLinkedVisualsToHiddenFolder(..) method called on document: " + documentModel.getPathAsString());
+        }
+
+        Collection docCollection = documentModel.getAdapter(Collection.class);
+
+        List<String> collectedDocumentIds = docCollection.getCollectedDocumentIds();
+        if (collectedDocumentIds.size() == 0) {
+            log.debug("No NWGVisuals documents attached to this document");
+
+            return false;
+        }
+
+        List<DocumentRef> listIdRef = new ArrayList<>();
+        for (String collectedDocumentId : collectedDocumentIds) {
+            IdRef idRef = new IdRef(collectedDocumentId);
+            DocumentModel visual = coreSession.getDocument(idRef);
+            listIdRef.add(visual.getRef());
+        }
+
+        // If we also want to remove visual from the collection, the following lines should do the trick
+        // It would require to also create a DocumentModelList to populate in the above loop
+        /*
+        CollectionManager collectionManager = Framework.getService(CollectionManager.class);
+        collectionManager.removeAllFromCollection(documentModel, visualList, coreSession);
+        */
+
+
+        // We then try to retrieve the default folder where to move visuals
+        // Retrieve a document using a query
+        String queryForGettingDefaultFolder = "SELECT * FROM Folder WHERE ecm:mixinType != 'HiddenInNavigation'" +
+                " AND ecm:isProxy = 0 AND ecm:isCheckedInVersion = 0 AND ecm:currentLifeCycleState != 'deleted'" +
+                " AND dc:title='" + DEFAULT_FOLDER_NAME_WHERE_TO_MOVE_VISUALS + "'";
+        DocumentModelList queryResults = coreSession.query(queryForGettingDefaultFolder);
+
+        if (queryResults.size() == 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("Was unable to move visuals as no Folder were found with the name '" + DEFAULT_FOLDER_NAME_WHERE_TO_MOVE_VISUALS + "'.");
+            }
+            return false;
+        }
+        DocumentModel folder = queryResults.get(0);
+
+        coreSession.move(listIdRef, folder.getRef());
+
+        return true;
     }
 }
