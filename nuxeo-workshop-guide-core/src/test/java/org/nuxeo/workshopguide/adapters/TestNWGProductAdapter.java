@@ -3,18 +3,16 @@ package org.nuxeo.workshopguide.adapters;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
+import org.nuxeo.workshopguide.features.NuxeoWorkshopGuideDefaultFeature;
 
 import javax.inject.Inject;
 
 @RunWith(FeaturesRunner.class)
-@Features(AutomationFeature.class)
-@Deploy({"org.nuxeo.workshopguide.nuxeo-workshop-guide-core", "org.nuxeo.ecm.platform.filemanager.core", "org.nuxeo.ecm.webapp.core", "studio.extensions.jroussel-SANDBOX"})
+@Features({NuxeoWorkshopGuideDefaultFeature.class})
 public class TestNWGProductAdapter {
     @Inject
     CoreSession session;

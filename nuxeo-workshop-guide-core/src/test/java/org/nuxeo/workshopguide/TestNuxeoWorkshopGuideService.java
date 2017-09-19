@@ -4,22 +4,18 @@ import com.google.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.nuxeo.ecm.automation.test.AutomationFeature;
-import org.nuxeo.ecm.collections.api.CollectionManager;
-import org.nuxeo.ecm.collections.core.adapter.Collection;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.runtime.RuntimeService;
 import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.LocalDeploy;
+import org.nuxeo.workshopguide.features.NuxeoWorkshopGuideDefaultFeature;
 
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(FeaturesRunner.class)
-@Features({AutomationFeature.class})
-@Deploy({"org.nuxeo.workshopguide.nuxeo-workshop-guide-core", "org.nuxeo.ecm.platform.filemanager.core", "org.nuxeo.ecm.webapp.core", "org.nuxeo.ecm.platform.collections.core", "studio.extensions.jroussel-SANDBOX"})
+@Features({NuxeoWorkshopGuideDefaultFeature.class})
 public class TestNuxeoWorkshopGuideService {
 
     @Inject
@@ -104,12 +100,17 @@ public class TestNuxeoWorkshopGuideService {
         DocumentModel defaultFolder = coreSession.createDocumentModel("/", "HiddenFolderForVisuals", "Folder");
         defaultFolder.setPropertyValue("dc:title", "HiddenFolderForVisuals");
         defaultFolder = coreSession.createDocument(defaultFolder);
+        coreSession.save();
 
         DocumentModel visual1 = coreSession.createDocumentModel("/", "myVisual1", "NWGVisual");
         visual1 = coreSession.createDocument(visual1);
+        coreSession.save();
+        Assert.assertEquals("/myVisual1", visual1.getPathAsString());
 
         DocumentModel visual2 = coreSession.createDocumentModel("/", "myVisual2", "NWGVisual");
         visual2 = coreSession.createDocument(visual2);
+        coreSession.save();
+        Assert.assertEquals("/myVisual2", visual2.getPathAsString());
 
         DocumentModel product = coreSession.createDocumentModel("/", "myProduct", "NWGProduct");
         product.setPropertyValue("nwgproduct:available", true);
