@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Name: nuxeo-workshop-guide-core
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.nuxeo.workshopguide.nuxeo-workshop-guide-core;singleton=true
+Nuxeo-WebModule: org.nuxeo.ecm.webengine.app.WebEngineModule;name=NuxeoWorkshopGuideWebModule;extends=base;package=org/nuxeo/workshopguide/endpoints
 Nuxeo-Component: OSGI-INF/nuxeoworkshopguideservice-service.xml,
  OSGI-INF/handlepriceoperation-operation-contrib.xml,
  OSGI-INF/org.nuxeo.workshopguide.adaptersnwgproduct-adapter-contrib.xml,

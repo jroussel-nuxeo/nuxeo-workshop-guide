@@ -4,8 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.collections.core.adapter.Collection;
 import org.nuxeo.ecm.core.api.*;
-import org.nuxeo.ecm.platform.usermanager.NuxeoPrincipalImpl;
-import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
@@ -90,7 +88,7 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
         log.debug("computePrice(..) method called");
 
         if (!"NWGProduct".equals(documentModel.getType())) {
-            return new Double(0);
+            return 0d;
         }
 
         // TODO test le cas par défaut si il n'a pas encore de prix
