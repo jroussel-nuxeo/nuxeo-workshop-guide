@@ -67,6 +67,7 @@ public class NWGProductAdapter {
 
     public void setTitle(String value) {
         doc.setPropertyValue(titleXpath, value);
+        this.save();
     }
 
     public String getDescription() {
@@ -75,6 +76,7 @@ public class NWGProductAdapter {
 
     public void setDescription(String value) {
         doc.setPropertyValue(descriptionXpath, value);
+        this.save();
     }
 
     public boolean getAvailable() {
@@ -83,6 +85,7 @@ public class NWGProductAdapter {
 
     public void setAvailable(boolean availability) {
         doc.setPropertyValue(availableXpath, availability);
+        this.save();
     }
 
     public double getPrice() {
@@ -91,6 +94,7 @@ public class NWGProductAdapter {
 
     public void setPrice(double price) {
         doc.setPropertyValue(priceXpath, price);
+        this.save();
     }
 
     public long getSize() {
@@ -99,5 +103,7 @@ public class NWGProductAdapter {
 
     public void setSize(long size) {
         doc.setPropertyValue(sizeXpath, size);
+        // TODO See with Yannis why this.save() is required
+        this.save();
     }
 }
