@@ -13,6 +13,8 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.LocalDeploy;
 import org.nuxeo.workshopguide.features.NuxeoWorkshopGuideDefaultFeature;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(FeaturesRunner.class)
@@ -62,6 +64,21 @@ public class TestNuxeoWorkshopGuideService {
         String queryForGettingDocument = "SELECT * FROM NWGProduct";
         DocumentModelList queryResults = coreSession.query(queryForGettingDocument);
         Assert.assertEquals(1, queryResults.size());
+
+
+        // Test adding a distributor complex metadata
+
+        HashMap<String, Object> distributor = new HashMap<>();
+        distributor.put("name", "Douglas Adams");
+        distributor.put("sellLocation", "42 rue de la fin du monde");
+        docModel.setPropertyValue("nwgproduct:distributor", distributor);
+        coreSession.save();
+
+        String retrievedDistributorName = (String) ((HashMap<String, Object>)docModel.getPropertyValue("nwgproduct:distributor")).get("name");
+        String retrievedDistributorSellLocation = (String) ((HashMap<String, Object>)docModel.getPropertyValue("nwgproduct:distributor")).get("sellLocation");
+
+        Assert.assertEquals("Douglas Adams", retrievedDistributorName);
+        Assert.assertEquals("42 rue de la fin du monde", retrievedDistributorSellLocation);
     }
 
     @Test
@@ -94,7 +111,6 @@ public class TestNuxeoWorkshopGuideService {
 
     @Test
     public void testMoveVisualsMethod() {
-        // TODO fix the following test. The method works while used on the platform
         DocumentModel defaultFolder = coreSession.createDocumentModel("/", "HiddenFolderForVisuals", "Folder");
         defaultFolder.setPropertyValue("dc:title", "HiddenFolderForVisuals");
         defaultFolder = coreSession.createDocument(defaultFolder);
