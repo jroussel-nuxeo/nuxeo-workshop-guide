@@ -91,20 +91,18 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
             return 0d;
         }
 
-        // TODO test le cas par défaut si il n'a pas encore de prix
-        final double currentPrice = (double) documentModel.getPropertyValue("nwgproduct:price");
-
-        double newPrice;
-        // A contribution specified a custom amount to add
-        if (this.getOverriddenPriceToAdd() != 0) {
-            if (log.isDebugEnabled()) {
-                log.debug("Contribution found with the following value: " + this.getOverriddenPriceToAdd());
-            }
-            // TODO le getOverridenPriceToAdd pourrait directement porter l'intelligence de renvoyer la valeur par défaut ou la valeur surchargée
-            newPrice = currentPrice + this.getOverriddenPriceToAdd();
-        } else {
-            newPrice = currentPrice + PRICE_TO_ADD;
+        double currentPrice;
+        try {
+            currentPrice = (double) documentModel.getPropertyValue("nwgproduct:price");
         }
+        catch (NullPointerException ex) {
+            if (log.isDebugEnabled()) {
+                log.debug("computePrice(..) has been called on a product which has no price currently set. Product: " + documentModel.getPath());
+            }
+            currentPrice = 0d;
+        }
+
+        double newPrice = currentPrice + this.getPriceToAdd();
 
         if (log.isDebugEnabled()) {
             log.debug("Old price: " + currentPrice + " | New price: " + newPrice);
@@ -172,5 +170,16 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
         coreSession.move(listIdRef, folder.getRef());
 
         return true;
+    }
+
+    private double getPriceToAdd() {
+        if (this.getOverriddenPriceToAdd() != 0) {
+            if (log.isDebugEnabled()) {
+                log.debug("Contribution found with the following value: " + this.getOverriddenPriceToAdd());
+            }
+            return this.getOverriddenPriceToAdd();
+        } else {
+            return PRICE_TO_ADD;
+        }
     }
 }

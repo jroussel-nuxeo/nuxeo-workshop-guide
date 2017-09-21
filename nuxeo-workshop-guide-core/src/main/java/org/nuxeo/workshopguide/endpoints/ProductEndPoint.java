@@ -25,7 +25,6 @@ public class ProductEndPoint extends ModuleRoot {
         DocumentModel product = coreSession.getDocument(new IdRef(productID));
 
         if("NWGProduct".equals(product.getType())) {
-            // TODO Call the service and compute the price
             double newPrice = nuxeoWorkshopGuideService.computePrice(product);
             coreSession.saveDocument(product);
         }

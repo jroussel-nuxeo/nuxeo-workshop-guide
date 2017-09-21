@@ -83,15 +83,27 @@ public class TestNuxeoWorkshopGuideService {
 
     @Test
     public void testComputePrice() {
-        final double expectedPrice = 42;
+        final double expectedPrice = 50;
 
         DocumentModel docModel = coreSession.createDocumentModel("/", "myProduct", "NWGProduct");
-        docModel.setPropertyValue("nwgproduct:price", 0);
+        docModel.setPropertyValue("nwgproduct:price", 8);
         docModel = coreSession.createDocument(docModel);
 
         coreSession.save();
 
         // TODO modifier l'assert pour tester que la propriété soit bien modifiée
+        Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel), 0.001);
+    }
+
+    @Test
+    public void testComputePriceWhenNoPriceHasBeenSet() {
+        final double expectedPrice = 42;
+
+        DocumentModel docModel = coreSession.createDocumentModel("/", "myProduct", "NWGProduct");
+        docModel = coreSession.createDocument(docModel);
+
+        coreSession.save();
+
         Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel), 0.001);
     }
 
