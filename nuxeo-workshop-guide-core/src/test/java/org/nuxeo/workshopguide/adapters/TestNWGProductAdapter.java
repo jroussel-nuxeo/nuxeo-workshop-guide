@@ -33,7 +33,6 @@ public class TestNWGProductAdapter {
         NWGProductAdapter adapter = doc.getAdapter(NWGProductAdapter.class);
         adapter.setTitle(testTitle);
         adapter.create();
-        // session.save() is only needed in the context of unit tests
         session.save();
 
         Assert.assertNotNull("The adapter can't be used on the " + doctype + " document type", adapter);
@@ -41,5 +40,7 @@ public class TestNWGProductAdapter {
         Assert.assertEquals(isAvailable, adapter.getAvailable());
         Assert.assertEquals(price, adapter.getPrice(), 0.001);
         Assert.assertEquals(size, adapter.getSize());
+
+        // TODO pousser le test en utilisant et testant les setters de l'adapter
     }
 }

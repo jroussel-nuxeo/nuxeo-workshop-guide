@@ -1,0 +1,32 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:nxu="http://nuxeo.org/nxweb/util"
+     xmlns:f="http://java.sun.com/jsf/core"
+     xmlns:a4j="http://richfaces.org/a4j"
+     xmlns:rich="http://richfaces.org/rich"
+     xmlns:h="http://java.sun.com/jsf/html"
+     xmlns:c="http://java.sun.com/jstl/core"
+     xmlns:nxh="http://nuxeo.org/nxweb/html"
+     xmlns:nxl="http://nuxeo.org/nxforms/layout"
+     xmlns:nxd="http://nuxeo.org/nxweb/document">
+
+    <h3>Add a distributor</h3>
+    <h:form id="addDistributorForm">
+        <h:outputLabel for="name">Distributor name:</h:outputLabel>
+        <h:inputText value="#{buttonAddDistributorBean.name}" id="name"/>
+        <br/>
+
+        <h:outputLabel for="sellLocation">Sell location:</h:outputLabel>
+        <h:inputText value="#{buttonAddDistributorBean.sellLocation}" id="sellLocation"/>
+
+        <div class="buttonsGadget">
+            <a4j:commandButton value="Add distributor" action="#{buttonAddDistributorBean.submit()}"
+                               styleClass="button"
+                               oncomplete="jQuery.fancybox.close(); return true;" />
+            <a4j:commandButton styleClass="button"
+                               immediate="true"
+                               value="#{messages['command.cancel']}"
+                               oncomplete="jQuery.fancybox.close();"/>
+        </div>
+    </h:form>
+
+</div>

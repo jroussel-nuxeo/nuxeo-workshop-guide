@@ -1,11 +1,11 @@
 package org.nuxeo.workshopguide;
 
-import com.google.inject.Inject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.collections.core.adapter.Collection;
 import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.platform.usermanager.NuxeoPrincipalImpl;
+import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentContext;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
@@ -93,6 +93,7 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
             return new Double(0);
         }
 
+        // TODO test le cas par défaut si il n'a pas encore de prix
         final double currentPrice = (double) documentModel.getPropertyValue("nwgproduct:price");
 
         double newPrice;
@@ -101,7 +102,7 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
             if (log.isDebugEnabled()) {
                 log.debug("Contribution found with the following value: " + this.getOverriddenPriceToAdd());
             }
-
+            // TODO le getOverridenPriceToAdd pourrait directement porter l'intelligence de renvoyer la valeur par défaut ou la valeur surchargée
             newPrice = currentPrice + this.getOverriddenPriceToAdd();
         } else {
             newPrice = currentPrice + PRICE_TO_ADD;
@@ -111,13 +112,22 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
             log.debug("Old price: " + currentPrice + " | New price: " + newPrice);
         }
 
+        // TODO potentiellement déporter le set dans l'operation, qui fait également le save. Le computePrice ne ferait alors que le calcul du prix
+        // Ou alors passer le coreSession en input de cette méthode, et s'assurer de faire le coreSession.save() après le set
         documentModel.setPropertyValue("nwgproduct:price", newPrice);
 
-        return currentPrice + PRICE_TO_ADD;
+        return newPrice;
     }
 
     @Override
     public boolean moveLinkedVisualsToHiddenFolder(DocumentModel documentModel, CoreSession coreSession) {
+        // Si besoin de récupérer/créer un coreSession à la volée :
+        // Framework.getService(CoreSessionService.class).createCoreSession(String repository, NuxeoPrincipal nuxeoPrincipal)
+
+        // Si besoin d'exécuter quelque chose dans un context "CoreSession Admin", possibilité d'utiliser
+        // UnrestrictedSessionRunner : job sans restrictions (c'est une classe à implémenter), qui possède une méthode run()
+        // Si nécessaire voir avec Florent
+
         if (log.isDebugEnabled()) {
             log.debug("moveLinkedVisualsToHiddenFolder(..) method called on document: " + documentModel.getPathAsString());
         }

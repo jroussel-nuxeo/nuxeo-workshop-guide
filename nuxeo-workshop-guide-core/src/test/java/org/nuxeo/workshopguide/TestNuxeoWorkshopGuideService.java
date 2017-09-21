@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.nuxeo.ecm.collections.api.CollectionManager;
 import org.nuxeo.ecm.core.api.*;
 import org.nuxeo.runtime.RuntimeService;
 import org.nuxeo.runtime.api.Framework;
@@ -73,14 +74,13 @@ public class TestNuxeoWorkshopGuideService {
 
         coreSession.save();
 
+        // TODO modifier l'assert pour tester que la propriété soit bien modifiée
         Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel), 0.001);
     }
 
     @Test
     @LocalDeploy({"org.nuxeo.workshopguide.nuxeo-workshop-guide-core:nuxeoworkshopguideservice-contrib.xml"})
     public void testComputePriceWithContribution() {
-        // TODO test not yet working
-        /*
         final double expectedPrice = 10;
 
         DocumentModel docModel = coreSession.createDocumentModel("/", "myProduct", "NWGProduct");
@@ -90,13 +90,11 @@ public class TestNuxeoWorkshopGuideService {
         coreSession.save();
 
         Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel), 0.001);
-        */
     }
 
     @Test
     public void testMoveVisualsMethod() {
         // TODO fix the following test. The method works while used on the platform
-        /*
         DocumentModel defaultFolder = coreSession.createDocumentModel("/", "HiddenFolderForVisuals", "Folder");
         defaultFolder.setPropertyValue("dc:title", "HiddenFolderForVisuals");
         defaultFolder = coreSession.createDocument(defaultFolder);
@@ -125,8 +123,11 @@ public class TestNuxeoWorkshopGuideService {
 
 
         nuxeoworkshopguideservice.moveLinkedVisualsToHiddenFolder(product, coreSession);
-        Assert.assertTrue(visual1.getPathAsString().contains("HiddenFolderForVisuals"));
-        Assert.assertTrue(visual2.getPathAsString().contains("HiddenFolderForVisuals"));
-        */
+        visual1 = coreSession.getDocument(new IdRef(visual1.getId()));
+        visual2 = coreSession.getDocument(new IdRef(visual2.getId()));
+
+        //coreSession.save();
+        Assert.assertEquals("/HiddenFolderForVisuals/myVisual1", visual1.getPathAsString());
+        Assert.assertEquals("/HiddenFolderForVisuals/myVisual2", visual2.getPathAsString());
     }
 }

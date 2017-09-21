@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<component name="org.nuxeo.workshopguide.action.adddistributor"
+           version="1.0">
+
+    <extension target="org.nuxeo.ecm.platform.actions.ActionService"
+               point="actions">
+
+        <action id="action.adddistributor" type="fancybox" order="200"
+                label="label.org.nuxeo.workshopguide.action.AddDistributor" icon="/icons/book16.png">
+            <category>DOCUMENT_UPPER_ACTION</category>
+            <filter id="addDistributor">
+                <rule grant="true">
+                    <type>NWGProduct</type>
+                </rule>
+            </filter>
+            <properties>
+                <property name="include">addDistributor.xhtml</property>
+                <property name="ajaxSupport">true</property>
+            </properties>
+        </action>
+
+    </extension>
+</component>

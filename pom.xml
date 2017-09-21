@@ -16,6 +16,8 @@
 
   <modules>
     <module>nuxeo-workshop-guide-core</module>
+    <module>nuxeo-workshop-guide-jsf</module>
+    <module>nuxeo-workshop-guide-package</module>
   </modules>
 
   <repositories>
@@ -71,6 +73,16 @@
       <dependency>
         <groupId>org.nuxeo.workshopguide</groupId>
         <artifactId>nuxeo-workshop-guide-core</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nuxeo.workshopguide</groupId>
+        <artifactId>nuxeo-workshop-guide-jsf</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.nuxeo.workshopguide</groupId>
+        <artifactId>nuxeo-workshop-guide-package</artifactId>
         <version>1.0-SNAPSHOT</version>
       </dependency>
     </dependencies>

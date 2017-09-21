@@ -34,6 +34,8 @@ public class HandlePriceOperation {
 
             nwgService.computePrice(documentModel);
             session.saveDocument(documentModel);
+
+            // TODO test retirer les session.saveDocument et voir si l'automationChain se charge de faire les save toute seule à la fin
         }
     }
 
