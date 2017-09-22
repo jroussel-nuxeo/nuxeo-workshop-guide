@@ -35,7 +35,7 @@ public class TestNWGProductAdapter {
         NWGProductAdapter adapter = doc.getAdapter(NWGProductAdapter.class);
         adapter.setTitle(testTitle);
         adapter.create();
-        coreSession.save();
+        adapter.save();
 
         Assert.assertNotNull("The adapter can't be used on the " + doctype + " document type", adapter);
         Assert.assertEquals("Document title does not match when using the adapter", testTitle, adapter.getTitle());
@@ -46,7 +46,7 @@ public class TestNWGProductAdapter {
         adapter.setAvailable(!isAvailable);
         adapter.setPrice(0);
         adapter.setSize(0);
-        coreSession.save();
+        adapter.save();
 
         DocumentModel updatedDoc = coreSession.getDocument(new IdRef(doc.getId()));
         Assert.assertEquals(!isAvailable, (boolean) updatedDoc.getPropertyValue("nwgproduct:available"));

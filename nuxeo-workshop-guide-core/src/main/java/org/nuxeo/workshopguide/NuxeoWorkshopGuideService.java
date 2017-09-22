@@ -11,7 +11,7 @@ public interface NuxeoWorkshopGuideService {
      * @param documentModel a NWGProduct document
      * @return new price of the NWGProduct
      */
-    double computePrice(DocumentModel documentModel);
+    double computePrice(DocumentModel documentModel, CoreSession coreSession);
 
     boolean moveLinkedVisualsToHiddenFolder(DocumentModel documentModel, CoreSession coreSession);
 }

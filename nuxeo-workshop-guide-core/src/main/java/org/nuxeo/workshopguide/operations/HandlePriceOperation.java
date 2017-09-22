@@ -23,7 +23,7 @@ public class HandlePriceOperation {
     public static final String ID = "Document.HandlePriceOperation";
 
     @Context
-    protected CoreSession session;
+    protected CoreSession coreSession;
 
     @OperationMethod
     public void run(DocumentModel documentModel) {
@@ -32,10 +32,8 @@ public class HandlePriceOperation {
         if ("NWGProduct".equals(documentModel.getType())) {
             NuxeoWorkshopGuideService nwgService = Framework.getService(NuxeoWorkshopGuideService.class);
 
-            nwgService.computePrice(documentModel);
-            session.saveDocument(documentModel);
-
-            // TODO test retirer les session.saveDocument et voir si l'automationChain se charge de faire les save toute seule à la fin
+            nwgService.computePrice(documentModel, coreSession);
+            coreSession.saveDocument(documentModel);
         }
     }
 
@@ -47,8 +45,8 @@ public class HandlePriceOperation {
 
         for (DocumentModel documentModel : documentModels) {
             if ("NWGProduct".equals(documentModel.getType())) {
-                nwgService.computePrice(documentModel);
-                session.saveDocument(documentModel);
+                nwgService.computePrice(documentModel, coreSession);
+                coreSession.saveDocument(documentModel);
             }
         }
     }

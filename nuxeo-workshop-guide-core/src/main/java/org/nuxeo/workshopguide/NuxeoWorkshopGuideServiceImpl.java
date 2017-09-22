@@ -84,7 +84,7 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
     }
 
     @Override
-    public double computePrice(DocumentModel documentModel) {
+    public double computePrice(DocumentModel documentModel, CoreSession coreSession) {
         log.debug("computePrice(..) method called");
 
         if (!"NWGProduct".equals(documentModel.getType())) {
@@ -111,18 +111,19 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
         // TODO potentiellement déporter le set dans l'operation, qui fait également le save. Le computePrice ne ferait alors que le calcul du prix
         // Ou alors passer le coreSession en input de cette méthode, et s'assurer de faire le coreSession.save() après le set
         documentModel.setPropertyValue("nwgproduct:price", newPrice);
+        coreSession.save();
 
         return newPrice;
     }
 
     @Override
     public boolean moveLinkedVisualsToHiddenFolder(DocumentModel documentModel, CoreSession coreSession) {
-        // Si besoin de récupérer/créer un coreSession à la volée :
+        // If we need to get/create a CoreSession on the fly:
         // Framework.getService(CoreSessionService.class).createCoreSession(String repository, NuxeoPrincipal nuxeoPrincipal)
 
-        // Si besoin d'exécuter quelque chose dans un context "CoreSession Admin", possibilité d'utiliser
-        // UnrestrictedSessionRunner : job sans restrictions (c'est une classe à implémenter), qui possède une méthode run()
-        // Si nécessaire voir avec Florent
+        // If we need to execute something using a CoreSession similar to admin, a possibilité is to use:
+        // UnrestrictedSessionRunner: by implementing a class you get a job without restrictions, which has a run() method
+        // If needed see with Florent
 
         if (log.isDebugEnabled()) {
             log.debug("moveLinkedVisualsToHiddenFolder(..) method called on document: " + documentModel.getPathAsString());

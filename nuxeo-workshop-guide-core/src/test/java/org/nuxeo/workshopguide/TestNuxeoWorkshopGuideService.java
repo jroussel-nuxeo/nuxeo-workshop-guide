@@ -91,8 +91,13 @@ public class TestNuxeoWorkshopGuideService {
 
         coreSession.save();
 
-        // TODO modifier l'assert pour tester que la propriété soit bien modifiée
-        Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel), 0.001);
+        double newPrice = nuxeoworkshopguideservice.computePrice(docModel, coreSession);
+        coreSession.saveDocument(docModel);
+
+        DocumentModel updatedDoc = coreSession.getDocument(new IdRef(docModel.getId()));
+
+        Assert.assertEquals(expectedPrice, newPrice, 0.001);
+        Assert.assertEquals(expectedPrice, (double) updatedDoc.getPropertyValue("nwgproduct:price"), 0.001);
     }
 
     @Test
@@ -104,7 +109,7 @@ public class TestNuxeoWorkshopGuideService {
 
         coreSession.save();
 
-        Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel), 0.001);
+        Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel, coreSession), 0.001);
     }
 
     @Test
@@ -118,7 +123,7 @@ public class TestNuxeoWorkshopGuideService {
 
         coreSession.save();
 
-        Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel), 0.001);
+        Assert.assertEquals(expectedPrice, nuxeoworkshopguideservice.computePrice(docModel, coreSession), 0.001);
     }
 
     @Test
