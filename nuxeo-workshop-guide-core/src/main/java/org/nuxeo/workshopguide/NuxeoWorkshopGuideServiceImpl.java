@@ -53,20 +53,6 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
         super.deactivate(context);
     }
 
-    /**
-     * Application started notification.
-     * Called after the application started.
-     * You can do here any initialization that requires a working application
-     * (all resolved bundles and components are active at that moment)
-     *
-     * @param context the component context. Use it to get the current bundle context
-     * @throws Exception
-     */
-    @Override
-    public void applicationStarted(ComponentContext context) {
-        // do nothing by default. You can remove this method if not used.
-    }
-
     @Override
     public void registerContribution(Object contribution, String extensionPoint, ComponentInstance contributor) {
         if ("amount".equals(extensionPoint)) {
@@ -109,7 +95,6 @@ public class NuxeoWorkshopGuideServiceImpl extends DefaultComponent implements N
         }
 
         // TODO potentiellement déporter le set dans l'operation, qui fait également le save. Le computePrice ne ferait alors que le calcul du prix
-        // Ou alors passer le coreSession en input de cette méthode, et s'assurer de faire le coreSession.save() après le set
         documentModel.setPropertyValue("nwgproduct:price", newPrice);
         coreSession.save();
 

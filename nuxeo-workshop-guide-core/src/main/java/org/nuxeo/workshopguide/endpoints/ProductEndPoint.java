@@ -8,7 +8,7 @@ import org.nuxeo.ecm.webengine.model.impl.ModuleRoot;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.workshopguide.NuxeoWorkshopGuideService;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
@@ -17,8 +17,8 @@ import javax.ws.rs.core.Response;
 @Path("/product")
 public class ProductEndPoint extends ModuleRoot {
 
-    @GET
-    @Path("{productID}")
+    @POST
+    @Path("/computePrice/{productID}")
     public Response computePrice(@PathParam("productID") String productID) {
         NuxeoWorkshopGuideService nuxeoWorkshopGuideService = Framework.getService(NuxeoWorkshopGuideService.class);
 

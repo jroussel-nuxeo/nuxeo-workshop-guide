@@ -4,7 +4,6 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 
 public interface NuxeoWorkshopGuideService {
-    /** Add some methods here. **/
 
     /**
      * Compute and set a new price for a NWGProduct document

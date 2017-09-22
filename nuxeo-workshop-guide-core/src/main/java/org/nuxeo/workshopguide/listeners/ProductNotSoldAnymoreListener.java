@@ -33,8 +33,6 @@ public class ProductNotSoldAnymoreListener implements EventListener {
             }
 
 
-        } else {
-            return;
         }
     }
 }
