@@ -11,6 +11,7 @@ import org.nuxeo.workshopguide.NuxeoWorkshopGuideService;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
 @WebObject(type = "NWGProduct")
 @Path("/product")
@@ -18,7 +19,7 @@ public class ProductEndPoint extends ModuleRoot {
 
     @GET
     @Path("{productID}")
-    public void computePrice(@PathParam("productID") String productID) {
+    public Response computePrice(@PathParam("productID") String productID) {
         NuxeoWorkshopGuideService nuxeoWorkshopGuideService = Framework.getService(NuxeoWorkshopGuideService.class);
 
         CoreSession coreSession = ctx.getCoreSession();
@@ -27,10 +28,11 @@ public class ProductEndPoint extends ModuleRoot {
         if("NWGProduct".equals(product.getType())) {
             double newPrice = nuxeoWorkshopGuideService.computePrice(product, coreSession);
             coreSession.saveDocument(product);
+
+            return Response.ok().build();
         }
         else {
-            // TODO Do we have a way to throw a custom HTTP code as an answer? Have a look at Response object:
-            // https://stackoverflow.com/questions/4687271/jax-rs-how-to-return-json-and-http-status-code-together
+            return Response.status(404).build();
         }
     }
 }
