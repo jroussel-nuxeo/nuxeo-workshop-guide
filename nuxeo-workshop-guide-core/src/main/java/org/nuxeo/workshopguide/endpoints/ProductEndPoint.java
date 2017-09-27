@@ -2,6 +2,7 @@ package org.nuxeo.workshopguide.endpoints;
 
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentNotFoundException;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.ModuleRoot;
@@ -23,16 +24,21 @@ public class ProductEndPoint extends ModuleRoot {
         NuxeoWorkshopGuideService nuxeoWorkshopGuideService = Framework.getService(NuxeoWorkshopGuideService.class);
 
         CoreSession coreSession = ctx.getCoreSession();
-        DocumentModel product = coreSession.getDocument(new IdRef(productID));
+        try {
+            DocumentModel product = coreSession.getDocument(new IdRef(productID));
 
-        if("NWGProduct".equals(product.getType())) {
-            double newPrice = nuxeoWorkshopGuideService.computePrice(product, coreSession);
-            coreSession.saveDocument(product);
+            if("NWGProduct".equals(product.getType())) {
+                double newPrice = nuxeoWorkshopGuideService.computePrice(product, coreSession);
+                coreSession.saveDocument(product);
 
-            return Response.ok().build();
+                return Response.ok().build();
+            }
         }
-        else {
+        catch (DocumentNotFoundException ex) {
+            // If needed, you can declare a class implementing ExceptionMapper to generate generic behavior based on
+            // exceptions raised
             return Response.status(404).build();
         }
+        return Response.status(500).build();
     }
 }
